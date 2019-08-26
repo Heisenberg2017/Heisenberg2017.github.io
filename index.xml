@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>西斯小跳的博客</title>
-    <link>https://example.com/</link>
+    <link>https://heisenberg2017.github.io/</link>
     <description>Recent content on 西斯小跳的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <lastBuildDate>Fri, 23 Aug 2019 19:27:22 +0800</lastBuildDate>
     
-	<atom:link href="https://example.com/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://heisenberg2017.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>OpenStack基础库之WebOb</title>
-      <link>https://example.com/%E6%96%87%E7%AB%A0/openstack%E5%9F%BA%E7%A1%80%E5%BA%93%E4%B9%8Bwebob/</link>
+      <link>https://heisenberg2017.github.io/%E6%96%87%E7%AB%A0/openstack%E5%9F%BA%E7%A1%80%E5%BA%93%E4%B9%8Bwebob/</link>
       <pubDate>Fri, 23 Aug 2019 19:27:22 +0800</pubDate>
       
-      <guid>https://example.com/%E6%96%87%E7%AB%A0/openstack%E5%9F%BA%E7%A1%80%E5%BA%93%E4%B9%8Bwebob/</guid>
+      <guid>https://heisenberg2017.github.io/%E6%96%87%E7%AB%A0/openstack%E5%9F%BA%E7%A1%80%E5%BA%93%E4%B9%8Bwebob/</guid>
       <description>&lt;p&gt;WebOb是一个用于对WSGI request环境进行包装及用于创建WSGI response的一个包。
 &lt;/p&gt;</description>
     </item>
