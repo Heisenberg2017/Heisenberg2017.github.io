@@ -3,8 +3,8 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://example.com/posts/my-first-post/</loc>
-    <lastmod>2019-08-22T17:00:38+08:00</lastmod>
+    <loc>https://example.com/%E6%96%87%E7%AB%A0/openstack%E5%9F%BA%E7%A1%80%E5%BA%93%E4%B9%8Bwebob/</loc>
+    <lastmod>2019-08-23T19:27:22+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -16,21 +16,21 @@
   </url>
   
   <url>
-    <loc>https://example.com/</loc>
-    <lastmod>2019-08-22T17:00:38+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://example.com/posts/</loc>
-    <lastmod>2019-08-22T17:00:38+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>https://example.com/tags/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://example.com/%E6%96%87%E7%AB%A0/</loc>
+    <lastmod>2019-08-23T19:27:22+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://example.com/</loc>
+    <lastmod>2019-08-23T19:27:22+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0</priority>
   </url>
