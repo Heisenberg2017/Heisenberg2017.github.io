@@ -6,10 +6,21 @@
     <description>Recent content on 西斯小跳的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Sat, 31 Aug 2019 18:19:42 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 31 Aug 2019 19:32:42 +0800</lastBuildDate>
     
 	<atom:link href="https://heisenberg2017.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>OpenStack开发环境搭建</title>
+      <link>https://heisenberg2017.github.io/%E6%96%87%E7%AB%A0/openstack%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Sat, 31 Aug 2019 19:32:42 +0800</pubDate>
+      
+      <guid>https://heisenberg2017.github.io/%E6%96%87%E7%AB%A0/openstack%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
+      <description>&lt;p&gt;OpenStack是一个复杂的技术栈组合，这一章节我们将使用PackStack
+快速部署一个本地的All-in-One环境。
+&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>OpenStack开发简明教程</title>
