@@ -183,24 +183,70 @@
 
 <p>VMware14和CentOS 7的安装可以参考一下这篇博客<a href="https://duckduckgo.com">VMware14安装CentOS 7</a>.</p>
 
-<p>CentOS 7国内环境官方下载比较慢，这里可以选择镜像
-<a href="https://duckduckgo.com">CentOS 7国内镜像</a>.</p>
+<p>CentOS 7国内环境官方下载比较慢，这里可以选择阿里的镜像
+<a href="http://mirrors.aliyun.com/centos/7.6.1810/">CentOS 7国内镜像</a>.</p>
 
 <h4 id="部署all-in-one">部署All-in-One</h4>
 
-<p>在开始部署前你需要完整看完<a href="https://www.rdoproject.org/install/packstack/">rdo OpenStack All-in-One 环境部署</a>，
+<p>部署过程参考<a href="https://www.rdoproject.org/install/packstack/">rdo OpenStack All-in-One 环境部署</a>，
 注意我们安装的是Rocky版本，
-需使用openstack-rocky替换教程中的openstack-stein，
+需使用openstack-rocky替换教程中的openstack-stein，Openstack历史版本可以查看
 <a href="https://releases.openstack.org/">OpenStack相关版本</a>，国内用户安装可以替换yum源以提高下载速度
-<a href="https://duckduckgo.com">使用阿里的yum镜像</a>.。</p>
+<a href="https://www.jianshu.com/p/4aa7b63f9026">使用阿里的yum镜像</a>。</p>
 
-<p>本地部署完成后你应该可以打开(dashboard网址)，这里还需要添加一个 &ndash;enable-&hellip;.txt的事情</p>
+<p>注意点：</p>
+
+<p>1.安装一直卡(2个小时以上+)在  <code>openstack Testing if puppet apply is finished ...</code> ,
+首先你应该要检查是否使用了镜像，如果确认使用了镜像且网络没有问题的话，可以直接<code>ctrl+c</code>退出，重启电脑然后重新执行
+<code>sudo packstack --allinone</code>,如果是在虚拟机内部署的All-in-One环境
+可以分配更多的内存和CPU这样下载和启动速度都会快一点.</p>
+
+<p>2.安装失败且已经生成answerfile
+如果安装失败但是在命令行中看到如下信息
+```shell script
+* A new answerfile was created in: /root/packstack-answers-20190817-203646.txt</p>
+
+<pre><code>那么你下次安装的时候记得直接执行
+ `packstack --answer-file packstack-answers-20190817-203646.txt`
+ 这个时候packstack会根据已经生成的配置文件进行部署
+
+安装完成后你可以看到如下输出
+```shell script
+ Time synchronization installation was skipped. Please note that unsynchronized time on server instances might be problem for some OpenStack components.
+* File /root/keystonerc_admin has been created on OpenStack client host 192.168.12.128. To use the command line tools you need to source the file.
+* To access the OpenStack Dashboard browse to http://192.168.12.128/dashboard .
+Please, find your login credentials stored in the keystonerc_admin in your home directory.
+* The installation log file is available at: /var/tmp/packstack/20190818-091906-r_BX4u/openstack-setup.log
+* The generated manifests are available at: /var/tmp/packstack/20190818-091906-r_BX4u/manifests
+</code></pre>
+
+<p>打开<code>http://192.168.12.128/dashboard</code>（具体IP查看部署命令输出）,你会看到如下界面
+<img src="/images/Openstack登陆页面.png" alt="Horizon登陆页" title="Horizon登陆页" />
+你的页面颜色可能和我不一样，我这里使用了chrome的插件,用户名和密码在<code>packstack-answers-20190817-203646.txt</code>
+的这个文件里面，你可以使用<code>sudo find / -name &quot;packstack-answers-*&quot;</code>查看这个配置文件的位置，打开这个文件找到下面的两行
+```shell script</p>
+
+<h1 id="password-to-use-for-the-identity-service-admin-user">Password to use for the Identity service &lsquo;admin&rsquo; user.</h1>
+
+<p>CONFIG_KEYSTONE_ADMIN_PW=97a7dd26984940ff</p>
+
+<h1 id="password-to-use-for-the-identity-service-demo-user">Password to use for the Identity service &lsquo;demo&rsquo; user.</h1>
+
+<p>CONFIG_KEYSTONE_DEMO_PW=63c2dd13d9154ab6
+```
+admin用户对应密码CONFIG_KEYSTONE_ADMIN_PW,
+demo用户对应密码CONFIG_KEYSTONE_DEMO_PW</p>
+
+<p>我们使用demo用户登陆,登陆成功后看到
+<img src="/images/Horizon主页.png" alt="Horizon主页" title="Horizon主页" />
+这个时候All-in-One的环境就部署完成了，这里如果浏览器显示的是中文的话建议到浏览器的设置里面进行修改，
+因为这里的命名和里面模块名有关，英文名称对你后面学习Horizon的开发会有帮助</p>
 
 <h4 id="工作环境">工作环境</h4>
 
-<p>IDE的话我们选择Pycharm，由于日常工作中可能会经常使用不同的虚拟机来部署不同的组件，
+<p>如果只是打算在本地开发的话可以跳过这一个步骤,IDE的话我们选择Pycharm，由于日常工作中可能会经常使用不同的虚拟机来部署不同的组件，
 所以我会把IDE安装在Win10上，然后使用Pycharm自带的文件同步服务(基于fstp)和远程Debug服务(基于pydev)
-进行开发与调试,具体参考<a href="https://www.jetbrains.com/help/pycharm/remote-debugging-with-product.html">Pycharm的remote部署及调试</a>.</p>
+进行开发与调试,具体参考<a href="https://www.jetbrains.com/help/pycharm/remote-debugging-with-product.html">Pycharm的远程部署及调试</a>.</p>
 
 <h4 id="其他资料">其他资料:</h4>
 
@@ -212,7 +258,7 @@
 
 <p>Ansible相关:
 <a href="https://ansible-tran.readthedocs.io/en/latest/docs/intro.html">Ansible中文权威指南</a>、
-<a href="https://docs.openstack.org/project-deploy-guide/openstack-ansible/rocky/index.html">使用Ansible部署OpenStack</a></p><ul class="pa0">
+<a href="https://docs.openstack.org/openstack-ansible/rocky/user/aio/quickstart.html">使用Ansible部署OpenStack All-in-One</a></p><ul class="pa0">
   
 </ul>
 <div class="mt6">
