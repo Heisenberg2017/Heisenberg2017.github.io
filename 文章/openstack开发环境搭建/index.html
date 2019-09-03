@@ -197,7 +197,7 @@
 <p>注意点：</p>
 
 <p>1.安装一直卡(2个小时以上+)在  <code>openstack Testing if puppet apply is finished ...</code> ,
-首先你应该要检查是否使用了镜像，如果确认使用了镜像且网络没有问题的话，可以直接<code>ctrl+c</code>退出，重启电脑然后重新执行
+首先你应该要检查是否使用了镜像，如果确认使用了镜像且网络没有问题的话，可以直接ctrl+c退出，重启电脑然后重新执行
 <code>sudo packstack --allinone</code>,如果是在虚拟机内部署的All-in-One环境
 可以分配更多的内存和CPU这样下载和启动速度都会快一点.</p>
 
@@ -207,7 +207,7 @@
 * A new answerfile was created in: /root/packstack-answers-20190817-203646.txt</p>
 
 <pre><code>那么你下次安装的时候记得直接执行
- `packstack --answer-file packstack-answers-20190817-203646.txt`
+ ```packstack --answer-file packstack-answers-20190817-203646.txt```
  这个时候packstack会根据已经生成的配置文件进行部署
 
 安装完成后你可以看到如下输出
@@ -220,10 +220,10 @@ Please, find your login credentials stored in the keystonerc_admin in your home 
 * The generated manifests are available at: /var/tmp/packstack/20190818-091906-r_BX4u/manifests
 </code></pre>
 
-<p>打开<code>http://192.168.12.128/dashboard</code>（具体IP查看部署命令输出）,你会看到如下界面
+<p>打开<a href="http://192.168.12.128/dashboard（具体IP查看部署命令输出）,你会看到如下界面">http://192.168.12.128/dashboard（具体IP查看部署命令输出）,你会看到如下界面</a>
 <img src="/images/Openstack登陆页面.png" alt="Horizon登陆页" title="Horizon登陆页" />
-你的页面颜色可能和我不一样，我这里使用了chrome的插件,用户名和密码在<code>packstack-answers-20190817-203646.txt</code>
-的这个文件里面，你可以使用<code>sudo find / -name &quot;packstack-answers-*&quot;</code>查看这个配置文件的位置，打开这个文件找到下面的两行
+你的页面颜色可能和我不一样，我这里使用了chrome的插件,用户名和密码在packstack-answers-20190817-203646.txt
+的这个文件里面，你可以使用sudo find / -name &ldquo;packstack-answers-*&ldquo;查看这个配置文件的位置，打开这个文件找到下面的两行
 ```shell script</p>
 
 <h1 id="password-to-use-for-the-identity-service-admin-user">Password to use for the Identity service &lsquo;admin&rsquo; user.</h1>
