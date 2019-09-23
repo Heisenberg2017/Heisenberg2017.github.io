@@ -463,7 +463,47 @@ urlpatterns = [
 {% endblock %}
 </code></pre>
 
-<p>TODO: 这里还有几个文件没有写进来</p>
+<p>test.py</p>
+
+<pre><code class="language-python">from horizon.test import helpers as test
+
+
+class MypanelTests(test.TestCase):
+    # Unit tests for mypanel.
+    def test_me(self):
+        self.assertTrue(1 + 1 == 2)
+
+</code></pre>
+
+<p>models.py</p>
+
+<pre><code class="language-python"># Additional Model for mydashboard.
+</code></pre>
+
+<p>mydashboard.css</p>
+
+<pre><code>/* Additional CSS for mydashboard. */
+</code></pre>
+
+<p>mydashboard.js</p>
+
+<pre><code>/* Additional JavaScript for mydashboard. */
+</code></pre>
+
+<p>bash.html</p>
+
+<pre><code>{% extends 'base.html' %}
+
+{% block sidebar %}
+  {% include 'horizon/common/_sidebar.html' %}
+{% endblock %}
+
+{% block main %}
+    {% include &quot;horizon/_messages.html&quot; %}
+    {% block mydashboard_main %}{% endblock %}
+{% endblock %}
+
+</code></pre>
 
 <h4 id="使代码生效">使代码生效</h4>
 
