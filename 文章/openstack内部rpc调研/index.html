@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <link href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/monokai.min.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+    <title>西斯小跳的博客  | 如何实时获取OpenStack资源操作进度</title>
+      <meta name="google-site-verification" content="KyYIkz-NPfdU4rBdGfaTle3rkBW2NqehRIFqF6lqe-I" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.0-DEV" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="如何实时获取OpenStack资源操作进度" />
+<meta property="og:description" content="OpenStack对资源进行操作时接口是异步的，调用方不知道资源操作的进度情况。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://heisenberg2017.github.io/%E6%96%87%E7%AB%A0/openstack%E5%86%85%E9%83%A8rpc%E8%B0%83%E7%A0%94/" />
+<meta property="article:published_time" content="2020-02-09T18:47:06+08:00" />
+<meta property="article:modified_time" content="2020-02-09T18:47:06+08:00" />
+<meta itemprop="name" content="如何实时获取OpenStack资源操作进度">
+<meta itemprop="description" content="OpenStack对资源进行操作时接口是异步的，调用方不知道资源操作的进度情况。">
+
+
+<meta itemprop="datePublished" content="2020-02-09T18:47:06&#43;08:00" />
+<meta itemprop="dateModified" content="2020-02-09T18:47:06&#43;08:00" />
+<meta itemprop="wordCount" content="468">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="如何实时获取OpenStack资源操作进度"/>
+<meta name="twitter:description" content="OpenStack对资源进行操作时接口是异步的，调用方不知道资源操作的进度情况。"/>
+
+      
+    
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://heisenberg2017.github.io/" class="f3 fw2 hover-white no-underline white-90 dib">
+      西斯小跳的博客
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="/%E5%88%86%E4%BA%AB/" title="分享 page">
+              分享
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="/%E6%95%99%E7%A8%8B/" title="教程 page">
+              教程
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="/%E6%96%87%E7%AB%A0/" title="文章 page">
+              文章
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+
+
+
+
+
+
+
+<a href="https://github.com/Heisenberg2017" target="_blank" class="link-transition github link dib z-999 pt3 pt0-l mr1" title="Github link" rel="noopener" aria-label="follow on Github——Opens in a new window">
+  <svg  height="32px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        文章
+      </p>
+      <h1 class="f1 athelas mb1">如何实时获取OpenStack资源操作进度</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2020-02-09T18:47:06&#43;08:00">February 9, 2020</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>OpenStack对资源进行操作时接口是异步的，调用方不知道资源操作的进度情况。</p>
+
+<h4 id="问题">问题</h4>
+
+<p>1.在OpenStack中对资源进行创建删除等操作接口多是异步，
+调用端很难在第一时间获取操作进度，业务上只能用轮询
+查找表中对应字段状态来获取当前操作进度。</p>
+
+<p>2.轮询同步状态延迟大会导致更多的业务问题，
+降低延时会导致查询次数激增，数据库压力较大。</p>
+
+<h4 id="初期方案">初期方案</h4>
+
+<p>方案一:使用阿里canal,消费数据库binlog,获取表中字段变更，增量更新</p>
+
+<p>方案二:使用OpenStack的组件ceilometer获取资源操作进度</p>
+
+<p>方案三:获取/转发OpenStack内部操作的通知</p>
+
+<p>方案一和方案二都太重了，会引入额外的外部依赖项，使系统更难以维护，方案三更为轻量级，
+在查看源码时也发现OpenStack内部确实使用了统一的通知机制(oslo_messaging模块中的Notifier),
+综合看来选择方案三。</p>
+
+<h4 id="方案是否可行">方案是否可行？</h4>
+
+<p>OpenStack确实有通过oslo_messaging中的Notifier发送一些消息到消息队列，
+如果我们需要转发或者获取这些消息是否可以做到?</p>
+
+<p>这里我以一个对实例的
+创建操作为例子，看下是否符合要求</p>
+
+<p>以下代码在OpenStack oslo_messaging/notify/notifier.py，我新增了两行调试代码用于打印信息
+(pysnooper是我用来替换print打印调用信息的，感兴趣可以直接github)</p>
+
+<pre><code class="language-python">class Notifier(object):
+    ......
+    import pysnooper    # 调试代码
+    @pysnooper.snoop('/home/mylog/rpc.txt', max_variable_length=None)    # 调试代码
+    def _notify(self, ctxt, event_type, payload, priority, publisher_id=None,
+                retry=None):
+</code></pre>
+
+<p>添加调用信息后重启服务，创建实例查看打印出的信息,这里我重命名了rpc.txt为create_instance_succ.txt,</p>
+
+<p>这是一个创建实例成功的例子，每一个通知为一个事件，创建实例一共经过了以下6个事件，
+调度开始-&gt;调度结束-&gt;计算节点创建实例-&gt;实例开始创建-&gt;计算节点实例创建完成-&gt;实例创建完成.</p>
+
+<pre><code>root@controller01:/home/mylog# grep -r &quot;event_type = &quot; create_instance_succ.txt
+Starting var:.. event_type = 'scheduler.select_destinations.start'
+Starting var:.. event_type = 'scheduler.select_destinations.end'
+Starting var:.. event_type = 'compute.instance.create.start'
+Starting var:.. event_type = u'instance.create.start'
+Starting var:.. event_type = 'compute.instance.create.end'
+Starting var:.. event_type = u'instance.create.end'
+</code></pre>
+
+<p>实例创建成功所有的消息优先级都为INFO</p>
+
+<pre><code>root@controller01:/home/mylog# grep -r &quot;priority = &quot; create_instance_succ.txt
+Starting var:.. priority = 'INFO'
+Starting var:.. priority = 'INFO'
+Starting var:.. priority = 'INFO'
+Starting var:.. priority = 'INFO'
+Starting var:.. priority = 'INFO'
+Starting var:.. priority = 'INFO'
+</code></pre>
+
+<p>所以，如果获取/转发消息我们是能够知道实例创建的进度的</p>
+
+<p>如果实例创建失败是否还能收到通知？</p>
+
+<p>下面是实例创建失败的事件和消息优先级，实例创建失败后计算节点关闭实例，然后又发送了三条ERROR
+消息</p>
+
+<pre><code class="language-python">root@controller01:/home/mylog# grep -r &quot;event_type = &quot; create_instance_fail.txt
+Starting var:.. event_type = 'scheduler.select_destinations.start'
+Starting var:.. event_type = 'scheduler.select_destinations.end'
+Starting var:.. event_type = 'compute.instance.create.start'
+Starting var:.. event_type = u'instance.create.start'
+Starting var:.. event_type = 'compute.instance.shutdown.start'
+Starting var:.. event_type = u'instance.shutdown.start'
+Starting var:.. event_type = 'compute.instance.shutdown.end'
+Starting var:.. event_type = u'instance.shutdown.end'
+Starting var:.. event_type = 'compute.instance.create.error'
+Starting var:.. event_type = u'instance.create.error'
+Starting var:.. event_type = 'compute_task.build_instances'
+
+root@controller01:/home/mylog# grep -r &quot;priority = &quot; create_instance_fail.txt
+Starting var:.. priority = 'INFO'
+Starting var:.. priority = 'INFO'
+Starting var:.. priority = 'INFO'
+Starting var:.. priority = 'INFO'
+Starting var:.. priority = 'INFO'
+Starting var:.. priority = 'INFO'
+Starting var:.. priority = 'INFO'
+Starting var:.. priority = 'INFO'
+Starting var:.. priority = 'ERROR'
+Starting var:.. priority = 'ERROR'
+Starting var:.. priority = 'ERROR'
+</code></pre>
+
+<p>下面是event_type = &lsquo;compute.instance.create.error&rsquo;的通知完整信息，报文中有
+提到是Binding failed for port导致的</p>
+
+<pre><code class="language-python">payload = {'state_description': 'spawning', 'code': 400, 'availability_zone': u'nova', 'terminated_at': '', 'ephemeral_gb': 0, 'instance_type_id': 3, 'message': u'Binding failed for port 68f24085-cb55-4922-9269-30665b09fc1c, please check neutron logs for more information.', 'deleted_at': '', 'reservation_id': u'r-0jefs3wm', 'memory_mb': 128, 'display_name': u'Abbb', 'hostname': u'abbb', 'state': u'building', 'progress': '', 'launched_at': '', 'metadata': {}, 'node': u'controller01', 'ramdisk_id': u'', 'access_ip_v6': None, 'disk_gb': 5, 'access_ip_v4': None, 'kernel_id': u'', 'host': u'controller01', 'user_id': u'9d4e00ff83854227ae622b63b46a745b', 'image_ref_url': u'http://192.168.90.20:9292/images/ce79d17e-0ac1-4ac2-8fad-a30a22c3f847', 'cell_name': '', 'exception': {'message': u'Binding failed for port 68f24085-cb55-4922-9269-30665b09fc1c, please check neutron logs for more information.', 'class': 'PortBindingFailed', 'kwargs': {'code': 400, 'port_id': u'68f24085-cb55-4922-9269-30665b09fc1c'}}, 'root_gb': 5, 'tenant_id': u'fa71832779b34e1a80f3b08529890040', 'created_at': '2020-02-06 09:21:48+00:00', 'instance_id': u'8410be12-b064-461e-a97d-6ba765b35de5', 'instance_type': u'test', 'vcpus': 1, 'image_meta': {u'stores': u'fast', u'container_format': u'bare', u'min_ram': u'0', u'disk_format': u'qcow2', u'min_disk': u'5', u'base_image_ref': u'ce79d17e-0ac1-4ac2-8fad-a30a22c3f847'}, 'architecture': None, 'os_type': None, 'instance_flavor_id': u'f64fa859-3929-4480-bf2b-0035d1cbe8a5'}
+</code></pre>
+
+<p>综上，无论成功或者失败都能获得操作信息，而且报文信息详细，单就实例创建来说，这个方案可行</p>
+
+<h4 id="是否能覆盖所需业务">是否能覆盖所需业务</h4>
+
+<p>目前nova和glance官方文档都有对于notify的描述，但是没有覆盖所有的通知信息，文档描述的还不够完整，
+如果查看源码可以知道对应操作都是有发送通知的。</p>
+
+<p>neutron暂时没有找到官方的完整描述，查看源码有对应事件通知</p>
+
+<p>cinder需要在/etc/cindr/cinder.conf中配置下面参数才能打开通知</p>
+
+<pre><code class="language-python">control_exchange = cinder
+notification_driver = cinder.openstack.common.notifier.rpc_notifier
+</code></pre>
+
+<p>和cinder相关通知，创建卷、删除卷、连接卷(连接卷是nova通知的)</p>
+
+<pre><code class="language-python">root@controller01:/home/mylog# grep -r &quot;event_type = &quot; create_volume.txt
+Starting var:.. event_type = 'volume.create.start'
+Starting var:.. event_type = 'volume.create.end'
+root@controller01:/home/mylog# grep -r &quot;event_type = &quot; attach_volume.txt
+Starting var:.. event_type = u'instance.volume_attach.start'
+Starting var:.. event_type = 'compute.instance.volume.attach'
+Starting var:.. event_type = u'instance.volume_attach.end'
+root@controller01:/home/mylog# grep -r &quot;event_type = &quot; delete_volume.txt
+Starting var:.. event_type = 'volume.delete.start'
+Starting var:.. event_type = 'volume.delete.end'
+</code></pre>
+
+<p>综上，OpenStack内部组件都会使用oslo_messaging来发送通知，协作完成操作，
+部分组件发送通知要新增配置信息，有的消息是发给一些组件做监控计量使用的如ceilometer.
+目前notify可以覆盖当前业务，需要定制情况下可仿照OpenStack添加通知。</p>
+
+<h4 id="如何应用">如何应用</h4>
+
+<p>获取/转发信息</p>
+
+<p>1.可以把消息转发到消息队列然后进行消费</p>
+
+<p>2.直接消费OpenStack消息队列中对应的topic</p>
+
+<p>消息如何对应？</p>
+
+<p>直接通过资源id就可以得知，例如通过instance_id过滤事件，得知某个实例创建的进度。</p>
+
+<h4 id="参考文档">参考文档</h4>
+
+<ul>
+<li><a href="https://docs.openstack.org/nova/pike/reference/notifications.html">Notifications in Nova</a>
+官网对nova notifications的描述，其中包括对event_type，priority等多个参数及消息的例子</li>
+<li><a href="https://docs.openstack.org/glance/latest/admin/notifications.html">Notifications in Glance</a>
+官网对glance notifications的描述，年代久远且不完整，需要时还是直接看源码比较方便</li>
+<li><a href="https://blog.csdn.net/haoge921026/article/details/54616354">计量模块 Ceilometer 中的数据收集机制</a>
+CSDN上讲Ceilometer如何数据，有一定的参考意义目前大部分代码及文档都变了，虽然调研过程参考了一下Ceilometer，但是
+notifications中的通知还是以源码为准</li>
+<li><a href="https://github.com/cool-RR/PySnooper">pysnooper</a>
+上文用来调试代码以分析运行时参数的python库，相对print更完整，pdb更方便。</li>
+</ul><ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+        <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-heisenberg2017-github-io-1" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://heisenberg2017.github.io/" >
+    &copy; 2020 西斯小跳的博客
+  </a>
+    <div>
+
+
+
+
+
+
+
+<a href="https://github.com/Heisenberg2017" target="_blank" class="link-transition github link dib z-999 pt3 pt0-l mr1" title="Github link" rel="noopener" aria-label="follow on Github——Opens in a new window">
+  <svg  height="32px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>
